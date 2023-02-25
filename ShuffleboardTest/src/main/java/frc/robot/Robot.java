@@ -7,9 +7,15 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.networktables.GenericEntry;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import java.util.Map;
+
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -21,7 +27,8 @@ public class Robot extends TimedRobot {
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
-  private long tester = 0;
+  private long tester = 0; 
+
 
 
   private ShuffleboardTab test = Shuffleboard.getTab("Variable Test");
@@ -29,7 +36,20 @@ public class Robot extends TimedRobot {
     test.add("Test Variable", tester)
       .getEntry();
 
-  /**x`
+
+  private ShuffleboardTab talonsTab = Shuffleboard.getTab("TalonSRX");
+    private GenericEntry talonSRXSpeed = 
+      talonsTab.addPersistent("TalonSRX Speed", 0)
+        .withWidget(BuiltInWidgets.kNumberSlider)
+        .withProperties(Map.of("min", 0, "max", 1))
+        .getEntry();
+    private GenericEntry talonSRXPort = 
+      talonsTab.addPersistent("TalonSRX Port", 1)
+        .getEntry();
+
+
+  private TalonSRX m_talonSRX = new TalonSRX((int)talonSRXPort.getInteger(1));
+  /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
@@ -89,6 +109,8 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     tester = testVariable.getInteger(tester);
+
+    m_talonSRX.set(ControlMode.PercentOutput, talonSRXSpeed.getDouble(0));
 
   }
   /** This function is called once when the robot is disabled. */
