@@ -12,10 +12,12 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.networktables.GenericEntry;
 
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import java.util.Map;
 
+import java.time.Clock;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -29,6 +31,7 @@ public class Robot extends TimedRobot {
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   private long tester = 0; 
 
+  private Clock clock = Clock.systemUTC();
 
 
   private ShuffleboardTab test = Shuffleboard.getTab("Variable Test");
@@ -46,6 +49,10 @@ public class Robot extends TimedRobot {
     private GenericEntry talonSRXPort = 
       talonsTab.addPersistent("TalonSRX Port", 1)
         .getEntry();
+
+  private ShuffleboardTab timeTab = Shuffleboard.getTab("Time");
+    private GenericEntry time = timeTab.add("Time", clock.instant().toString())
+    .getEntry();
 
 
   private TalonSRX m_talonSRX = new TalonSRX((int)talonSRXPort.getInteger(1));
@@ -112,6 +119,8 @@ public class Robot extends TimedRobot {
 
     m_talonSRX.set(ControlMode.PercentOutput, talonSRXSpeed.getDouble(0));
 
+
+    time.setString(clock.instant().toString());
   }
   /** This function is called once when the robot is disabled. */
   @Override
