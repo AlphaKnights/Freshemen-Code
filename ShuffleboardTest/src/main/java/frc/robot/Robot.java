@@ -52,6 +52,7 @@ public class Robot extends TimedRobot {
 
   private ShuffleboardTab timeTab = Shuffleboard.getTab("Time");
     private GenericEntry time = timeTab.add("Time", clock.instant().toString())
+    .withSize(2, 1)
     .getEntry();
 
 
